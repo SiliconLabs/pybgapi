@@ -1,0 +1,202 @@
+<?xml version="1.0" ?>
+<api device_id="0" device_name="test">
+    <class index="0" name="types" singleton="true">
+        <command index="0" name="int8" script="0">
+            <params>
+                <param name="value" type="int8"/>
+            </params>
+            <returns>
+                <param name="value" type="int8"/>
+            </returns>
+        </command>
+        <command index="1" name="uint8" script="1">
+            <params>
+                <param name="value" type="uint8"/>
+            </params>
+            <returns>
+                <param name="value" type="uint8"/>
+            </returns>
+        </command>
+        <command index="2" name="int16" script="2">
+            <params>
+                <param name="value" type="int16"/>
+            </params>
+            <returns>
+                <param name="value" type="int16"/>
+            </returns>
+        </command>
+        <command index="3" name="uint16" script="3">
+            <params>
+                <param name="value" type="uint16"/>
+            </params>
+            <returns>
+                <param name="value" type="uint16"/>
+            </returns>
+        </command>
+        <command index="4" name="uint32" script="4">
+            <params>
+                <param name="value" type="uint32"/>
+            </params>
+            <returns>
+                <param name="value" type="uint32"/>
+            </returns>
+        </command>
+        <command index="5" name="uint8array" script="5">
+            <params>
+                <param name="value" type="uint8array"/>
+            </params>
+            <returns>
+                <param name="value" type="uint8array"/>
+            </returns>
+        </command>
+        <command index="6" name="bd_addr" script="6">
+            <params>
+                <param name="value" type="bd_addr"/>
+            </params>
+            <returns>
+                <param name="value" type="bd_addr"/>
+            </returns>
+        </command>
+        <command index="7" name="hw_addr" script="7">
+            <params>
+                <param name="value" type="hw_addr"/>
+            </params>
+            <returns>
+                <param name="value" type="hw_addr"/>
+            </returns>
+        </command>
+        <command index="8" name="ipv4" script="8">
+            <params>
+                <param name="value" type="ipv4"/>
+            </params>
+            <returns>
+                <param name="value" type="ipv4"/>
+            </returns>
+        </command>
+        <command index="9" name="uint16array" script="9">
+            <params>
+                <param name="value" type="uint16array"/>
+            </params>
+            <returns>
+                <param name="value" type="uint16array"/>
+            </returns>
+        </command>
+        <command index="10" name="int32" script="10">
+            <params>
+                <param name="value" type="int32"/>
+            </params>
+            <returns>
+                <param name="value" type="int32"/>
+            </returns>
+        </command>
+        <command index="11" name="uuid_128" script="11">
+            <params>
+                <param name="value" type="uuid_128"/>
+            </params>
+            <returns>
+                <param name="value" type="uuid_128"/>
+            </returns>
+        </command>
+        <command index="12" name="aes_key_128" script="12">
+            <params>
+                <param name="value" type="aes_key_128"/>
+            </params>
+            <returns>
+                <param name="value" type="aes_key_128"/>
+            </returns>
+        </command>
+        <command index="13" name="sl_bt_uuid_64_t" script="13">
+            <params>
+                <param name="value" type="sl_bt_uuid_64_t"/>
+            </params>
+            <returns>
+                <param name="value" type="sl_bt_uuid_64_t"/>
+            </returns>
+        </command>
+	<command index="14" name="int64" script="14">
+	    <params>
+		<param name="value" type="int64"/>
+	    </params>
+	    <returns>
+		<param name="value" type="int64"/>
+	    </returns>
+	</command>
+        <command index="15" name="uint64" script="15">
+            <params>
+                <param name="value" type="uint64"/>
+            </params>
+            <returns>
+                <param name="value" type="uint64"/>
+            </returns>
+        </command>
+    </class>
+    <class index="1" name="simple" singleton="true">
+        <command index="0" name="returns" script="0">
+            <params>
+                <param name="param" type="uint8"/>
+            </params>
+            <returns>
+                <param name="return" type="uint8"/>
+            </returns>
+        </command>
+        <command index="1" name="no_return" no_return="true" script="1">
+            <params>
+                <param name="param" type="uint8"/>
+            </params>
+            <returns/>
+        </command>
+        <command index="2" name="command_a" script="2">
+            <returns/>
+        </command>
+        <command index="3" name="command_b" script="3">
+            <returns/>
+        </command>
+        <command index="4" name="can_fail" script="4">
+            <returns>
+                <param name="result" type="uint16" datatype="errorcode" />
+            </returns>
+        </command>
+        <event index="0" name="no_params" script="0">
+            <params/>
+        </event>
+        <event index="1" name="single_uint8" script="1">
+            <params>
+                <param name="value" type="uint8"/>
+            </params>
+        </event>
+        <event index="2" name="double_uint8" script="2">
+            <params>
+                <param name="value1" type="uint8"/>
+                <param name="value2" type="uint8"/>
+            </params>
+        </event>
+    </class>
+    <class index="2" name="complex" singleton="true">
+        <command index="0" name="multi_type" script="0">
+            <params>
+                <param name="param1" type="uint8"/>
+                <param name="param2" type="uint16"/>
+            </params>
+            <returns>
+                <param name="return1" type="uint8"/>
+                <param name="return2" type="uint16"/>
+            </returns>
+        </command>
+        <command index="1" name="array" script="1">
+            <params>
+                <param name="param1" type="uint16"/>
+                <param name="param2" type="uint8array"/>
+            </params>
+            <returns>
+                <param name="return1" type="uint16"/>
+                <param name="return2" type="uint8array"/>
+            </returns>
+        </command>
+        <event index="0" name="multi_type_event" script="0">
+            <params>
+                <param name="value1" type="uint8"/>
+                <param name="value2" type="uint16"/>
+            </params>
+        </event>
+    </class>
+</api>

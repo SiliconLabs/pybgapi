@@ -1,0 +1,2 @@
+exclude tox.ini
+global-exclude .gitignore
