@@ -1,5 +1,13 @@
 ## Changelog
 
+### 1.2.0 - 2022-09-02
+#### Added
+- Thread safety for commands.
+- Support the `byte_array` type.
+
+#### Changed
+- Improve error messages in deserializer.
+
 ### 1.1.0 - 2021-06-28
 #### Added
 - Support the `sl_bt_uuid_16_t` type.

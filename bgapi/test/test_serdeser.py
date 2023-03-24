@@ -139,5 +139,9 @@ class TestTypes(unittest.TestCase):
     def test_uuid_16(self):
         self.type_test("sl_bt_uuid_16_t", b"\x01\x02", b"0102")
 
+    def test_byte_array(self):
+        self.type_test("five_bytes_array", b'\x01\x02\x03\x04\x05', b"0102030405")
+        self.type_test("ten_bytes_array", b'\x05\x06\x07\x00\x01\x02\x03\x04\x05\x06', b"05060700010203040506")
+
 if __name__ == "__main__":
     unittest.main()

@@ -125,6 +125,8 @@ class Serializer(object):
                 lambda apiparam, x: ("8s", to_bytes(x)),
             "sl_bt_uuid_16_t" :
                 lambda apiparam, x: ("2s", to_bytes(x)),
+            "byte_array":
+                lambda apiparam, x: ("%ds" % apiparam.datatype.length, to_bytes(x)),
 
         }
 
@@ -152,6 +154,23 @@ class Serializer(object):
 
         return header + payload
 
+class DeserializerError(Exception):
+    """ Base class for deserializer related exceptions. """
+    def __init__(self, msg):
+        msg += "\nPlease check if correct XAPI file is in use."
+        super().__init__(msg)
+
+class DeserializerApiMissingError(DeserializerError):
+    """ This error is thrown if no API definition is found with the given device ID. """
+    def __init__(self, device_id):
+        msg = "No API definition for device ID {:d}".format(device_id)
+        super().__init__(msg)
+
+class DeserializerEventMissingError(DeserializerError):
+    """ This error is thrown if no event definition is found for the given class. """
+    def __init__(self, class_id, event_id):
+        msg = "No event definition with index {:d} for class {:d}.".format(class_id, event_id)
+        super().__init__(msg)
 
 class Deserializer(object):
 
@@ -200,7 +219,7 @@ class Deserializer(object):
         try:
             api = self.apis[device_id]
         except KeyError:
-            raise Exception("No API definition for device ID %d" % device_id)
+            raise DeserializerApiMissingError(device_id) from None
         apidoc_name = api.name
 
         if cmdevt == MSG_COMMAND:
@@ -212,30 +231,52 @@ class Deserializer(object):
                 apiparams = cmdevt.returns
                 apidoc_name += "_rsp"
         else:
-            cmdevt = api[classIndex].events[cmdEvtIndex]
+            try:
+                cmdevt = api[classIndex].events[cmdEvtIndex]
+            except KeyError:
+                raise DeserializerEventMissingError(classIndex, cmdEvtIndex) from None
             apiparams = cmdevt.params
             apidoc_name += "_evt"
 
         apidoc_name += "_%s_%s" % (cmdevt.api_class.name, cmdevt.name)
 
         unpackers = {
-            "int8": lambda x: "b",
-            "uint8": lambda x: "B",
-            "int16": lambda x: "h",
-            "uint16": lambda x: "H",
-            "int32": lambda x: "i",
-            "uint32": lambda x: "I",
-            "int64": lambda x: "q",
-            "uint64": lambda x: "Q",
-            "uint8array": lambda x: "x%ds" % struct.unpack("<B", x[:1]),
-            "uint16array": lambda x: "xx%ds" % struct.unpack("<H", x[:2]),
-            "bd_addr": lambda x: "6s",
-            "hw_addr": lambda x: "6s",
-            "ipv4": lambda x: "4s",
-            "uuid_128": lambda x: "16s",
-            "aes_key_128": lambda x: "16s",
-            "sl_bt_uuid_64_t": lambda x: "8s",
-            "sl_bt_uuid_16_t": lambda x: "2s",
+            "int8":
+                lambda apiparam, x: ("b"),
+            "uint8":
+                lambda apiparam, x: ("B"),
+            "int16":
+                lambda apiparam, x: ("h"),
+            "uint16":
+                lambda apiparam, x: ("H"),
+            "int32":
+                lambda apiparam, x: ("i"),
+            "uint32":
+                lambda apiparam, x: ("I"),
+            "int64":
+                lambda apiparam, x: ("q"),
+            "uint64":
+                lambda apiparam, x: ("Q"),
+            "uint8array":
+                lambda apiparam, x: ("x%ds" % struct.unpack("<B", x[:1])),
+            "uint16array":
+                lambda apiparam, x: ("xx%ds" % struct.unpack("<H", x[:2])),
+            "bd_addr":
+                lambda apiparam, x: ("6s"),
+            "hw_addr":
+                lambda apiparam, x: ("6s"),
+            "ipv4":
+                lambda apiparam, x: ("4s"),
+            "uuid_128":
+                lambda apiparam, x: ("16s"),
+            "aes_key_128":
+                lambda apiparam, x: ("16s"),
+            "sl_bt_uuid_64_t":
+                lambda apiparam, x: ("8s"),
+            "sl_bt_uuid_16_t":
+                lambda apiparam, x: ("2s"),
+            "byte_array":
+                lambda apiparam, x: ("%ds" % apiparam.datatype.length),
         }
 
         pos = 0
@@ -250,7 +291,7 @@ class Deserializer(object):
                         ", ".join(["'%s'" % (p.name) for p in apiparams[i:]]))
                 break
             # Give first 2 bytes of the field for array unpackers
-            fmt = unpackers[apiparam.format](payload[pos:pos+2])
+            fmt = unpackers[apiparam.format](apiparam, payload[pos:pos+2])
             pack_format += fmt
             pos += struct.calcsize(fmt)
 
@@ -286,6 +327,7 @@ class Deserializer(object):
             "aes_key_128": lambda x: x,
             "sl_bt_uuid_64_t": lambda x: x,
             "sl_bt_uuid_16_t": lambda x: x,
+            "byte_array": lambda x: x,
         }
 
         params = [converters[apiparam.format](param) for (param, apiparam) in zip(params, apiparams)]

@@ -74,6 +74,18 @@ class ApiDefine(dict):
             self[e.value] = e
 
 
+class ApiType(object):
+
+    def __init__(self, node):
+        if node is not None:
+            self.name = node.get("name", "")
+            self.base = node.get("base", "")
+            self.length = toInt(node.get("length", default=0))
+        else:
+            self.name = ""
+            self.base = ""
+            self.length = 0
+
 class ApiParameter(object):
 
     def __init__(self, parent, index, node):
@@ -81,7 +93,7 @@ class ApiParameter(object):
         self.index = toInt(index)
         self.name = node.attrib["name"]
         self.format = node.attrib["type"]
-        self.datatype = node.get("datatype", None)
+        self.datatype = self.parent.api_class.api.types.get(node.get("datatype", None), ApiType(None))
         self.validator_type = node.get("validator_type", None)
         self.validator_id = node.get("validator_id", None)
         self.description = node.findtext("description", default="")
@@ -165,6 +177,7 @@ class ParsedApi(dict):
 
         self.description = ""
         self.names = []
+        self.types = {}
 
         from xml.etree.ElementTree import parse
         node = parse(self.filename).getroot()
@@ -172,6 +185,12 @@ class ParsedApi(dict):
         self.device_id = toInt(node.attrib["device_id"])
         self.device_name = node.attrib["device_name"]
         self.name = self.device_name
+        # some old version of xapi might be missing datatypes totally
+        # datatypes is important only for byte_array types when the length of
+        # type needs to be specified
+        for datatype in map(ApiType, node.findall("./datatypes/datatype")):
+            self.types[datatype.name] = datatype
+
         try:
             self.version = node.attrib["version"]
         except KeyError:

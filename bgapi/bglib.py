@@ -269,7 +269,7 @@ class BGResponse(BGMsg):
         errorcode_field = None
 
         for return_field in self._apinode.returns:
-            if return_field.datatype == "errorcode":
+            if return_field.datatype.name == "errorcode":
                 errorcode_field = return_field.name
                 break
 
@@ -344,6 +344,8 @@ class BGLib(object):
 
         self.set_keep_device_awake_function(None)
 
+        self.api_command_lock = threading.Lock()
+
         for api in apis:
             apidict = {}
             for class_name in api.names:
@@ -378,6 +380,7 @@ class BGLib(object):
             if not lib.conn_handler:
                 raise Exception("Connection is closed")
 
+            lib.api_command_lock.acquire()
             lib._keep_device_awake(1)
             try:
                 cmd = BGCommand(apicmd, args)
@@ -390,6 +393,7 @@ class BGLib(object):
             finally:
                 if not apicmd.no_return:
                     lib._keep_device_awake(0)
+                lib.api_command_lock.release()
 
             if apicmd.no_return: return
 

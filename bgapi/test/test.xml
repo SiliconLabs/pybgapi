@@ -1,5 +1,11 @@
 <?xml version="1.0" ?>
 <api device_id="0" device_name="test">
+    <datatypes>
+        <datatype base="uint16" name="errorcode" length="2"/>
+        <datatype base="byte_array" name="byte_array" length="0"/>
+        <datatype base="byte_array" name="five_bytes_array" length="5"/>
+        <datatype base="byte_array" name="ten_bytes_array" length="10"/>
+    </datatypes>
     <class index="0" name="types" singleton="true">
         <command index="0" name="int8" script="0">
             <params>
@@ -113,14 +119,14 @@
                 <param name="value" type="sl_bt_uuid_64_t"/>
             </returns>
         </command>
-	<command index="14" name="int64" script="14">
-	    <params>
-		<param name="value" type="int64"/>
-	    </params>
-	    <returns>
-		<param name="value" type="int64"/>
-	    </returns>
-	</command>
+        <command index="14" name="int64" script="14">
+            <params>
+                <param name="value" type="int64"/>
+            </params>
+            <returns>
+                <param name="value" type="int64"/>
+            </returns>
+        </command>
         <command index="15" name="uint64" script="15">
             <params>
                 <param name="value" type="uint64"/>
@@ -135,6 +141,22 @@
             </params>
             <returns>
                 <param name="value" type="sl_bt_uuid_16_t"/>
+            </returns>
+        </command>
+        <command index="17" name="five_bytes_array" script="17">
+            <params>
+                <param datatype="five_bytes_array" name="value" type="byte_array"/>
+            </params>
+            <returns>
+                <param datatype="five_bytes_array" name="value" type="byte_array"/>
+            </returns>
+        </command>
+        <command index="18" name="ten_bytes_array" script="18">
+            <params>
+                <param datatype="ten_bytes_array" name="value" type="byte_array"/>
+            </params>
+            <returns>
+                <param datatype="ten_bytes_array" name="value" type="byte_array"/>
             </returns>
         </command>
     </class>
