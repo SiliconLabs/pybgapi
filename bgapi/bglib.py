@@ -124,15 +124,39 @@ class BGApiConnHandler(threading.Thread):
         self.conn.set_write_timeout(self.WRITE_TIMEOUT)
 
         while not self.stop_flag.is_set():
-            # This will block
-            header = self.read(size=serdeser.HEADER_LENGTH)
-            if header is None:
+            # Wait for the 1st byte of the header
+            header_start = self.read(size=1)
+            if header_start is None:
                 # Stop flag set while reading header
                 continue
 
+            ####################################################################
+            #                        WORKAROUND START
+            ####################################################################
+            # The transport layer currently doesn't guarantee an error-free
+            # communication channel. The following code is an attempt to
+            # eliminate junk data coming from the physical layer.
+            # This code shall be removed once the transport layer is replaced
+            # with a more robust one.
+            ####################################################################
+            # Check for valid header by checking the device type
+            device_id = (header_start[0] & 0x78) >> 3
+            if device_id not in self.ser.apis.keys():
+                continue
+            ####################################################################
+            #                        WORKAROUND END
+            ####################################################################
+
+            # Wait for the rest of the header
+            header_rest = self.read(size=serdeser.HEADER_LENGTH - 1)
+            if header_rest is None:
+                # Stop flag set while reading header
+                continue
+
+            header = header_start + header_rest
             cmdevt, device_id, payload_len, class_index, command_index = self.deser.parseHeader(header)
 
-            # This is the bit that will block some more
+            # Wait for the payload
             payload = self.read(size=payload_len)
             if payload is None:
                 # Stop flag set while reading payload
@@ -328,12 +352,12 @@ class BGLib(object):
                 for enum_group_name in api[class_name].enum_names:
                     for enum_name in api[class_name].enums[enum_group_name].names:
                         enum_val = api[class_name].enums[enum_group_name][enum_name]
-                        classdict[enum_val.name.upper()] = enum_val.value
+                        classdict[enum_group_name.upper() + "_" + enum_val.name.upper()] = enum_val.value
 
                 for def_group_name in api[class_name].define_names:
                     for def_name in api[class_name].defines[def_group_name].names:
                         def_val = api[class_name].defines[def_group_name][def_name]
-                        classdict[def_val.name.upper()] = def_val.value
+                        classdict[def_group_name.upper() + "_" + def_val.name.upper()] = def_val.value
 
                 for command_name in api[class_name].command_names:
                     cmd = self._createApiCommand(self, api.device_name, class_name,
@@ -344,6 +368,7 @@ class BGLib(object):
                 apidict[class_name] = api_class
 
             apidict["__doc__"] = api.description
+            apidict["__version__"] = api.version
             setattr(self, api.name, type("%sApi" % api.name.capitalize(), (object,), apidict)())
 
     def _createApiCommand(self, lib, device_name, class_name, command_name, apicmd):

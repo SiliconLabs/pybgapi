@@ -123,6 +123,8 @@ class Serializer(object):
                 lambda apiparam, x: ("16s", to_bytes(x)),
             "sl_bt_uuid_64_t" :
                 lambda apiparam, x: ("8s", to_bytes(x)),
+            "sl_bt_uuid_16_t" :
+                lambda apiparam, x: ("2s", to_bytes(x)),
 
         }
 
@@ -233,6 +235,7 @@ class Deserializer(object):
             "uuid_128": lambda x: "16s",
             "aes_key_128": lambda x: "16s",
             "sl_bt_uuid_64_t": lambda x: "8s",
+            "sl_bt_uuid_16_t": lambda x: "2s",
         }
 
         pos = 0
@@ -282,6 +285,7 @@ class Deserializer(object):
             "uuid_128": lambda x: x,
             "aes_key_128": lambda x: x,
             "sl_bt_uuid_64_t": lambda x: x,
+            "sl_bt_uuid_16_t": lambda x: x,
         }
 
         params = [converters[apiparam.format](param) for (param, apiparam) in zip(params, apiparams)]

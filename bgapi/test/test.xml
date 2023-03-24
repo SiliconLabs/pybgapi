@@ -129,6 +129,14 @@
                 <param name="value" type="uint64"/>
             </returns>
         </command>
+        <command index="16" name="sl_bt_uuid_16_t" script="16">
+            <params>
+                <param name="value" type="sl_bt_uuid_16_t"/>
+            </params>
+            <returns>
+                <param name="value" type="sl_bt_uuid_16_t"/>
+            </returns>
+        </command>
     </class>
     <class index="1" name="simple" singleton="true">
         <command index="0" name="returns" script="0">

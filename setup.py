@@ -23,8 +23,11 @@
 from setuptools import setup
 from os import path
 
-with open(path.join(path.dirname(__file__), 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+long_description = ""
+long_description_input = ['README.md', 'CHANGELOG.md']
+for infile in long_description_input:
+    with open(path.join(path.dirname(__file__), infile), encoding='utf-8') as f:
+        long_description += f.read() + "\n"
 
 setup(
     name="pybgapi",
@@ -47,6 +50,7 @@ setup(
     setup_requires=['setuptools_scm'],
 
     packages=["bgapi"],
+    data_files=[(".", ["CHANGELOG.md"])],
 
     python_requires=">=3.6",
     install_requires=["pyserial"],

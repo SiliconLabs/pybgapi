@@ -136,6 +136,8 @@ class TestTypes(unittest.TestCase):
     def test_uuid_64(self):
         self.type_test("sl_bt_uuid_64_t", b"Harambe!", b"486172616d626521")
 
+    def test_uuid_16(self):
+        self.type_test("sl_bt_uuid_16_t", b"\x01\x02", b"0102")
 
 if __name__ == "__main__":
     unittest.main()

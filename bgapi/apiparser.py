@@ -67,7 +67,7 @@ class ApiDefine(dict):
         self.values = {}
         self.names = []
 
-        for n in node.iter(tag="enum"):
+        for n in node.iter(tag="define"):
             e = ApiDefineVal(self, n)
             self.names.append(e.name)
             self[e.name] = e
@@ -140,7 +140,7 @@ class ApiClass(object):
             self.enum_names.append(e.name)
             self.enums[e.name] = e
 
-        for n in node.iter(tag="define"):
+        for n in node.iter(tag="defines"):
             e = ApiDefine(self, n)
             self.define_names.append(e.name)
             self.defines[e.name] = e
@@ -172,6 +172,10 @@ class ParsedApi(dict):
         self.device_id = toInt(node.attrib["device_id"])
         self.device_name = node.attrib["device_name"]
         self.name = self.device_name
+        try:
+            self.version = node.attrib["version"]
+        except KeyError:
+            self.version = None
         for n in node.iter(tag="class"):
             e = ApiClass(self, n)
             self.names.append(e.name)

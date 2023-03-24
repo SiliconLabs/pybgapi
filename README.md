@@ -23,6 +23,8 @@ custom hardware.
 
 For latest BGAPI documentation, see [docs.silabs.com](https://docs.silabs.com/bluetooth/latest/).
 
+For pyBGAPI example applications, see [github.com/SiliconLabs/pybgapi-examples](https://github.com/SiliconLabs/pybgapi-examples).
+
 ## Usage
 
 First, create an instance of the BGLib class, which is the main component of the package.
@@ -30,10 +32,8 @@ BGLib class provides functions for sending
 BGAPI commands and returning responses and ways to receive
 asynchronous BGAPI events. The BGLib constructor takes a connector, which is
 the transport between BGLib and the device, and a list of BGAPI definition
-files. These are the currently supported connectors:
-
-- [SerialConnector](bgapi/serialconnector.py)
-- [SocketConnector](bgapi/socketconnector.py)
+files. The currently supported connectors are `bgapi.SerialConnector` and
+`bgapi.SocketConnector`.
 
 Start by importing the *bgapi* package and creating a BGLib object with
 the Bluetooth API and a serial port connector. The *SerialConnector* takes the
@@ -88,12 +88,12 @@ their index. The attribute access is usually the preferred option.
 If a command fails and reports a non-zero result code, an exception is thrown, as follows:
 
     >>> try:
-    ...     l.bt.system.get_random_data(255)
+    ...     l.bt.advertiser.start(0, 0, 0)
     ... except bgapi.bglib.CommandFailedError as e:
     ...     print("Error 0x{:x} received, "
-    ...           "did we exceed the maximum length of 16?"
+    ...           "try to create an advertising set first."
     ...           .format(e.errorcode))
-    Error 0x180 received, did we exceed the maximum length of 16?
+    Error 0x21 received, try to create an advertising set first.
 
 The received events are stored in an event queue, which can be accessed by functions,
 such as `gen_events()`. This function is a generator, which
@@ -110,8 +110,7 @@ for one second.
     ...     if e == 'bt_evt_system_boot':
     ...         print("Bluetooth stack booted: v{major}.{minor}.{patch}-b{build}".format(**vars(e)))
     ...         break
-    Received event: bt_evt_system_boot(major=3, minor=1, patch=0, build=178, bootloader=17563648, hw=1, hash=36799935)
-    Bluetooth stack booted: v3.1.0-b178
+    Received event: bt_evt_system_boot(major=3, minor=2, patch=0, build=169, bootloader=17563648, hw=1, hash=3698707457)
+    Bluetooth stack booted: v3.2.0-b169
 
-Event object fields are accessed the same way as the response
-objects.
+Event object fields are accessed the same way as the response objects.
