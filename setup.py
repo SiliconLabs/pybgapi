@@ -32,7 +32,7 @@ for infile in long_description_input:
 setup(
     name="pybgapi",
     author="Silicon Labs",
-    url="https://www.silabs.com",
+    url="https://github.com/SiliconLabs/pybgapi",
     description="Python interface for the BGAPI binary protocol",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -40,10 +40,12 @@ setup(
     classifiers=[
         'License :: OSI Approved :: zlib/libpng License',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12'
     ],
 
     use_scm_version={'version_scheme': 'post-release'},
@@ -52,7 +54,7 @@ setup(
     packages=["bgapi"],
     data_files=[(".", ["CHANGELOG.md"])],
 
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     install_requires=["pyserial"],
     tests_require=["testfixtures"],
 

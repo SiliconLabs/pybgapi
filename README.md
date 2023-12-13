@@ -33,7 +33,11 @@ BGAPI commands and returning responses and ways to receive
 asynchronous BGAPI events. The BGLib constructor takes a connector, which is
 the transport between BGLib and the device, and a list of BGAPI definition
 files. The currently supported connectors are `bgapi.SerialConnector` and
-`bgapi.SocketConnector`.
+`bgapi.SocketConnector`. `bgapi.CpcConnector` is designed for multi-protocol
+scenarios and is available only on Linux. For more details about CPC, see
+[github.com/SiliconLabs/cpc-daemon](https://github.com/SiliconLabs/cpc-daemon).
+`bgapi.RobustConnector` is a special intermediate layer above regular connectors
+like `bgapi.SerialConnector` to eliminate common errors in the transport layer.
 
 Start by importing the *bgapi* package and creating a BGLib object with
 the Bluetooth API and a serial port connector. The *SerialConnector* takes the
@@ -80,7 +84,7 @@ their index. The attribute access is usually the preferred option.
     >>> print(response[3])
     195
 
-    >>> address, = l.bt.system.get_bt_address()
+    >>> address, = l.bt.system.get_identity_address()
     >>> print(address)
     00:0b:57:49:2b:47
 

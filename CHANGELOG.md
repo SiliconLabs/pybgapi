@@ -1,5 +1,15 @@
 ## Changelog
 
+### 1.3.0 - 2023-12-13
+
+#### Added
+- CPC connector. Requires [libcpc Python binding](https://github.com/SiliconLabs/cpc-daemon/tree/main/lib/bindings/python) to be installed.
+- Robust connector to eliminate errors in the transport layer.
+- `command` attribute in the `CommandFailedError` to provide more details about the error.
+
+#### Changed
+- Python version compatibility updated.
+
 ### 1.2.0 - 2022-09-02
 #### Added
 - Thread safety for commands.

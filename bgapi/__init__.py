@@ -21,11 +21,15 @@
 # 3. This notice may not be removed or altered from any source distribution.
 
 import logging
+import sys
 
 from .bglib import BGLib
 from .apiparser import ParsedApi
 from .serialconnector import SerialConnector
 from .socketconnector import SocketConnector
+from .robustconnector import RobustConnector
+if sys.platform.startswith('linux'):
+    from .cpcconnector import CpcConnector
 
 
 # Configure null handler for package-level logger

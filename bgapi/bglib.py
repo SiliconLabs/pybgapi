@@ -20,14 +20,9 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 
-from array import array
 import threading
-try:
-    import queue
-except ImportError:
-    import Queue as queue
+import queue
 import time
-from time import sleep
 import logging
 
 from .apihelper import api_cmd_to_ascii, camelcase
@@ -54,13 +49,14 @@ class CommandFailedError(CommandError):
     BGResponse object.
     """
 
-    def __init__(self, response):
+    def __init__(self, response, command):
         msg = "Command returned '{}' parameter with non-zero errorcode: {:#x}".format(
                 response._errorcode_field, response._errorcode)
 
-        super(CommandFailedError, self).__init__(msg)
+        super().__init__(msg)
         self.response = response
         self.errorcode = response._errorcode
+        self.command = command
 
 
 class BGApiConnHandler(threading.Thread):
@@ -103,7 +99,7 @@ class BGApiConnHandler(threading.Thread):
                     response = BGResponse(api_node, vals)
 
                     if response._errorcode != ERRORCODE_SUCCESS:
-                        raise CommandFailedError(response=response)
+                        raise CommandFailedError(response=response, command=bgcmd)
 
                     return response
                 except queue.Empty:
